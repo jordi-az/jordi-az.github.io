@@ -123,7 +123,7 @@ export default function Home() {
               <span>Jordi Aguilera</span>
             </h2>
             <p className="text-2xl text-balance text-gray-300/90">
-              No soy un robot,{' '}
+              No soy un robot :P,{' '}
               <span className="text-sky-300">
                 soy un desarrollador Front-End
               </span>{' '}
