@@ -4,30 +4,104 @@
 
 :root {
   --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  --background-start-rgb: 215, 219, 220; /* Color superior del modo claro */
+  --background-end-rgb: 232, 232, 232; /* Color inferior del modo claro */
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+    --background-start-rgb: 28, 32, 42; /* Color superior del modo oscuro */
+    --background-end-rgb: 1, 5, 10; /* Color inferior del modo oscuro */
   }
 }
 
-body {
+/* Aplica estilos solo en pantallas más grandes que tabletas */
+@media (min-width: 768px) {
+  .img-profile {
+    width: 124px;
+    aspect-ratio: 1;
+    border-radius: 100px;
+    transition: .5s;
+    cursor: pointer;
+    -webkit-mask: 
+      linear-gradient(135deg,#000c 40%,#000,#000c 60%)
+      100% 100%/250% 250%;
+  }
+  .img-profile:hover {
+    -webkit-mask-position: 0 0;
+  }
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+    to bottom,
+    rgb(var(--background-start-rgb)),
+    rgb(var(--background-end-rgb))
+  );
+  overflow-x: hidden; /* Para evitar el scroll horizontal */
+}
+
+body.light-mode {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 215, 219, 220;
+  --background-end-rgb: 232, 232, 232;
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+    to bottom,
+    rgb(var(--background-start-rgb)),
+    rgb(var(--background-end-rgb))
+  );
+}
+
+body.dark-mode {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 28, 32, 42;
+  --background-end-rgb: 1, 5, 10;
+  background: linear-gradient(
+    to bottom,
+    rgb(var(--background-start-rgb)),
+    rgb(var(--background-end-rgb))
+  );
+  color: rgb(var(--foreground-rgb));
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+/* Estilos específicos para el modo oscuro */
+body.dark-mode ::-webkit-scrollbar-track {
+  background: #2d3748; /* bg-gray-800 */
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb {
+  background-color: #4a5568; /* bg-gray-600 */
+}
+
+/* Estilos específicos para el modo claro */
+body.light-mode ::-webkit-scrollbar-track {
+  background: #e2e8f0; /* bg-gray-200 */
+}
+
+body.light-mode ::-webkit-scrollbar-thumb {
+  background-color: #a0aec0; /* bg-gray-400 */
+}
+
+.old-computer-text {
+  font-family: 'Courier New', Courier, monospace; /* Estilo de texto de ordenador antiguo */
+  background-color: #f0f0f0; /* Fondo gris claro */
+  border: 2px solid #333; /* Borde oscuro */
+  padding: 0.5rem 1rem; /* Espaciado interno */
+  border-radius: 0.5rem; /* Bordes redondeados */
+  color: #000; /* Color del texto */
+  display: inline-block; /* Asegura que el span respete los bordes y el fondo */
+  box-shadow: 2px 2px 0 #888; /* Sombra para darle un efecto de botón */
+  text-shadow: 1px 1px 0 #fff; /* Sombra interna para dar profundidad al texto */
 }
