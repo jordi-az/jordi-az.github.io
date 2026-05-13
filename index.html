@@ -3797,10 +3797,10 @@ function Hero() {
         {/* Live stats strip */}
         <div className="reveal d4" style={{ marginTop: 96, display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 1, background: 'var(--border)', border: '1px solid var(--border)', borderRadius: 20, overflow: 'hidden' }}>
           {[
-            ['10+', 'años construyendo software'],
+            ['+5', 'años construyendo software'],
             ['4', 'productos en producción'],
-            ['∞', 'dispositivos sincronizados'],
-            ['24/7', 'flotas monitorizadas'],
+            ['∞', 'desarrollo multiplataforma'],
+            ['+10', 'técnologias desarrolladas'],
           ].map(([n, l], i) => (
             <div key={i} style={{ padding: '28px 24px', background: 'var(--surface)' }}>
               <div className="display" style={{ fontSize: 44, lineHeight: 1 }}>{n}</div>
@@ -3811,7 +3811,7 @@ function Hero() {
       </div>
 
       {/* Animated scroll cue */}
-      <div style={{ position: 'absolute', left: '50%', bottom: 24, transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+      <div style={{ position: 'absolute', left: '50%', bottom: -80, transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
         <div className="mono" style={{ fontSize: 10, color: 'var(--text-dim)', letterSpacing: '0.2em' }}>SCROLL</div>
         <div style={{ width: 1, height: 36, background: 'linear-gradient(180deg, var(--text-dim), transparent)', animation: 'scroll-cue 2.4s ease-in-out infinite' }}></div>
       </div>
@@ -4161,8 +4161,7 @@ function Footer() {
           © 2026 Jordi Aguilera · Diseñado y desarrollado a mano
         </div>
         <div className="mono" style={{ fontSize: 12, color: 'var(--text-dim)', display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ width: 6, height: 6, borderRadius: 999, background: 'var(--green)', boxShadow: '0 0 6px var(--green)' }}></span>
-          Todos los sistemas operativos
+          Cuando soñéis con llegar a la luna, yo estaré tocando Marte.
         </div>
       </div>
     </footer>
