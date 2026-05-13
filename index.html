@@ -4067,42 +4067,6 @@ function TechIcon({ src, label, mono = false, fallback }) {
       )}
     </div>
   );
-}  const [failed, setFailed] = React.useState(false);
-  const initials = fallback || label
-    .split(/[^A-Za-z0-9]+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((word) => word[0])
-    .join('')
-    .toUpperCase();
-
-  return (
-    <div className="icon" title={`${label} logo`}>
-      {failed ? (
-        <div style={{
-          width: 32,
-          height: 32,
-          borderRadius: 10,
-          display: 'grid',
-          placeItems: 'center',
-          border: '1px solid var(--border-strong)',
-          fontFamily: 'var(--font-mono)',
-          fontWeight: 700,
-          fontSize: 11,
-          color: 'var(--text)'
-        }}>{initials}</div>
-      ) : (
-        <img
-          className={`tech-logo ${mono ? 'mono' : ''}`}
-          src={src}
-          alt={`${label} logo`}
-          loading="lazy"
-          referrerPolicy="no-referrer"
-          onError={() => setFailed(true)}
-        />
-      )}
-    </div>
-  );
 }
 
 // ─── Timeline ─────────────────────────────────────────────────
