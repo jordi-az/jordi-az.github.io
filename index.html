@@ -2269,7 +2269,7 @@ const { useState: gmUseState, useEffect: gmUseEffect, useRef: gmUseRef, useMemo:
 const WORKERS = [
   { id: 'BIL',   name: 'Hugo Fernández',  lat: 43.263, lng: -2.935, color: '#10B981', city: 'Bilbao' },
   { id: 'PMP',   name: 'Clara Navarro', lat: 42.812, lng: -1.645, color: '#3B82F6', city: 'Pamplona' },
-  { id: 'VLD',   name: 'Daniel Ortega',    lat: 41.652, lng: -4.728, color: '#10B981', city: 'Valladolid' },
+  { id: 'VLD',   name: 'Daniel Garcia',    lat: 41.652, lng: -4.728, color: '#10B981', city: 'Valladolid' },
   { id: 'LDA',   name: 'Marta Serrano',     lat: 41.617, lng:  0.620, color: '#10B981', city: 'Lleida' },
   { id: 'BCN',   name: 'Núria Castell',       lat: 41.385, lng:  2.173, color: '#10B981', city: 'Barcelona' },
   { id: 'MAD-1', name: 'Álvaro Medina',     lat: 40.416, lng: -3.704, color: '#EF4444', city: 'Madrid', alert: true },
@@ -2616,7 +2616,7 @@ function TopPillBar({ mode, onMode }) {
 
 // ─── Connected users strip (top corners) ─────────────────────
 function ConnectedUsers({ activeEmployee }) {
-  const right = ['Hugo Fernández', 'Clara Navarro', 'Daniel Ortega'];
+  const right = ['Hugo Fernández', 'Clara Navarro', 'Daniel Garcia'];
   const liveName = activeEmployee ? (activeEmployee.name || 'Jordi A.') : 'Jordi Aguilera';
   const liveColor = activeEmployee ? '#22D3EE' : '#FF4757';
   return (
@@ -3946,13 +3946,37 @@ function StackSection() {
     { name: 'JavaScript', kind: 'lang', logo: simpleIcon('javascript', 'F7DF1E') },
     { name: 'Node.js', kind: 'backend', logo: simpleIcon('nodedotjs', '5FA04E') },
     { name: 'Next.js', kind: 'frontend', logo: simpleIcon('nextdotjs', '111111'), mono: true },
-    { name: 'Salesforce', kind: 'platform', logo: simpleIcon('salesforce', '00A1E0') },
-    { name: 'Apex', kind: 'lang', logo: simpleIcon('salesforce', '00A1E0'), fallback: 'AP' },
+    { name: 'Salesforce', kind: 'platform', logo: iconFallbacks(
+      iconifyIcon('logos:salesforce'),
+      simpleIcon('salesforce', '00A1E0')
+    ), fallback: 'SF' },
+    { name: 'Apex', kind: 'lang', logo: iconFallbacks(
+      iconifyIcon('devicon:salesforce'),
+      simpleIcon('salesforce', '00A1E0')
+    ), fallback: 'AP' },
     { name: 'Claude Code', kind: 'AI coding', logo: simpleIcon('claude', 'D97757'), fallback: 'CC' },
-    { name: 'ChatGPT', kind: 'AI assistant', logo: simpleIcon('openai', '10A37F'), fallback: 'AI' },
-    { name: 'Power Apps', kind: 'platform', logo: simpleIcon('powerapps', '742774') },
-    { name: 'Power Automate', kind: 'platform', logo: simpleIcon('powerautomate', '0066FF') },
-    { name: 'Power BI', kind: 'data', logo: simpleIcon('powerbi', 'F2C811') },
+    { name: 'ChatGPT', kind: 'AI assistant', logo: iconFallbacks(
+      'https://unpkg.com/@lobehub/icons-static-svg@latest/icons/chatgpt-color.svg',
+      iconifyIcon('logos:openai-icon'),
+      iconifyIcon('simple-icons:openai', '10A37F'),
+      simpleIcon('openai', '10A37F')
+    ), fallback: 'AI' },
+    { name: 'Power Apps', kind: 'platform', logo: iconFallbacks(
+      iconifyIcon('logos:microsoft-powerapps'),
+      iconifyIcon('logos:microsoft-power-apps'),
+      iconifyIcon('simple-icons:powerapps', '742774')
+    ), fallback: 'PA' },
+    { name: 'Power Automate', kind: 'platform', logo: iconFallbacks(
+      iconifyIcon('logos:microsoft-power-automate'),
+      iconifyIcon('logos:power-automate'),
+      iconifyIcon('simple-icons:powerautomate', '0066FF')
+    ), fallback: 'PA' },
+
+    { name: 'Power BI', kind: 'data', logo: iconFallbacks(
+      iconifyIcon('logos:microsoft-power-bi'),
+      iconifyIcon('logos:power-bi'),
+      iconifyIcon('simple-icons:powerbi', 'F2C811')
+    ), fallback: 'BI' },
     { name: 'MongoDB', kind: 'database', logo: simpleIcon('mongodb', '47A248') },
     { name: 'PostgreSQL', kind: 'database', logo: simpleIcon('postgresql', '336791') },
     { name: 'Swift', kind: 'mobile', logo: simpleIcon('swift', 'F05138') },
@@ -3989,13 +4013,61 @@ function StackSection() {
   );
 }
 
+function iconifyIcon(name, color) {
+  const suffix = color ? `?color=%23${color.replace('#', '')}` : '';
+  return `https://api.iconify.design/${name}.svg${suffix}`;
+}
+
+function iconFallbacks(...urls) {
+  return urls.filter(Boolean);
+}
+
 // Public brand SVGs loaded from Simple Icons CDN.
 function simpleIcon(slug, color) {
   return `https://cdn.simpleicons.org/${slug}/${color}`;
 }
 
 function TechIcon({ src, label, mono = false, fallback }) {
-  const [failed, setFailed] = React.useState(false);
+  const sources = Array.isArray(src) ? src : [src];
+  const [index, setIndex] = React.useState(0);
+  const failed = index >= sources.length;
+
+  const initials = fallback || label
+    .split(/[^A-Za-z0-9]+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((word) => word[0])
+    .join('')
+    .toUpperCase();
+
+  return (
+    <div className="icon" title={`${label} logo`}>
+      {failed ? (
+        <div style={{
+          width: 32,
+          height: 32,
+          borderRadius: 10,
+          display: 'grid',
+          placeItems: 'center',
+          border: '1px solid var(--border-strong)',
+          fontFamily: 'var(--font-mono)',
+          fontWeight: 700,
+          fontSize: 11,
+          color: 'var(--text)'
+        }}>{initials}</div>
+      ) : (
+        <img
+          className={`tech-logo ${mono ? 'mono' : ''}`}
+          src={sources[index]}
+          alt={`${label} logo`}
+          loading="lazy"
+          referrerPolicy="no-referrer"
+          onError={() => setIndex((i) => i + 1)}
+        />
+      )}
+    </div>
+  );
+}  const [failed, setFailed] = React.useState(false);
   const initials = fallback || label
     .split(/[^A-Za-z0-9]+/)
     .filter(Boolean)
