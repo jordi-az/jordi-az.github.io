@@ -3244,9 +3244,8 @@ function SFConsole({ caseCreated, step, messages, typing, desktopScrollRef }) {
         <RelatedPanel/>
       </div>
       <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 32, background: '#FFFFFF', borderTop: '1px solid #D8DDE6', display: 'flex', alignItems: 'center', paddingLeft: 10, gap: 16, boxShadow: '0 -2px 8px rgba(15,23,42,0.08)' }}>
-        {['» Macros','◷ Historial','▣ Notas'].map(t => <div key={t} style={{ color: '#3E3E3C', fontSize: 10.5 }}>{t}</div>)}
+        {['📞 Telefono'].map(t => <div key={t} style={{ color: '#3E3E3C', fontSize: 10.5 }}>{t}</div>)}
         <div style={{ marginLeft: 3, height: 32, display: 'flex', alignItems: 'center', padding: '0 12px', borderLeft: '1px solid #D8DDE6', borderRight: '1px solid #D8DDE6', borderTop: '2px solid #5E35B1', color: '#0176D3', fontSize: 10.5, fontWeight: 700, background: '#FFFFFF' }}>💬 WhatsApp / Conversación</div>
-        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 6, paddingRight: 10, color: '#166534', fontSize: 10.5, fontWeight: 700 }}><span style={{ width: 9, height: 9, borderRadius: 999, background: '#22C55E', boxShadow: '0 0 10px #22C55E' }}></span>Sincronizado en tiempo real</div>
       </div>
     </div>
   );
