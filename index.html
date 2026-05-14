@@ -405,6 +405,106 @@ html[data-theme="light"] .btn-primary:hover { color: #fff; }
 /* Hero specific */
 .hero-name { font-size: clamp(60px, 11vw, 168px); }
 
+/* Hero 2-column layout */
+.hero-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+  margin-top: 36px;
+}
+@media (max-width: 980px) {
+  .hero-layout {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .hero-visual { display: none; }
+}
+
+/* Neon illustration */
+.hero-visual {
+  display: flex;
+  align-items: start;
+  justify-content: center;
+  position: relative;
+}
+.hero-visual svg {
+  width: 100%;
+  max-width: 520px;
+  height: auto;
+  will-change: transform;
+}
+@keyframes neon-float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(0.5deg); }
+}
+@keyframes neon-float-slow {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+@keyframes neon-pulse {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+@keyframes neon-scan {
+  0% { transform: translateY(0); opacity: 0.6; }
+  100% { transform: translateY(300px); opacity: 0; }
+}
+@keyframes neon-blink {
+  0%, 49%, 100% { opacity: 1; }
+  50%, 99% { opacity: 0; }
+}
+.hero-card-float { animation: neon-float 6s ease-in-out infinite; }
+.hero-badge-float { animation: neon-float-slow 4.5s ease-in-out infinite; }
+
+/* Mobile horizontal scroll fix */
+@media (max-width: 720px) {
+  .hero-stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .demo-stage {
+    overflow: hidden;
+    max-width: 100%;
+  }
+  .demo-stage > div {
+    max-width: 100%;
+  }
+  .wa-demo-wrapper {
+    transform: scale(0.45) !important;
+    transform-origin: top center !important;
+    margin-bottom: -420px !important;
+    width: 100%;
+  }
+  .project-row { margin-bottom: 120px !important; }
+}
+@media (max-width: 480px) {
+  .wa-demo-wrapper {
+    transform: scale(0.36) !important;
+    margin-bottom: -510px !important;
+  }
+}
+
+/* Language toggle button */
+.lang-toggle {
+  position: relative; z-index: 1;
+  height: 34px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  color: var(--text-mid);
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  gap: 4px;
+  transition: color 200ms ease, background 200ms ease;
+}
+.lang-toggle:hover { color: var(--text); background: var(--nav-indicator); }
+@media (max-width: 720px) { .lang-toggle { padding: 0 7px; font-size: 10px; } }
+
 /* Utility */
 .text-mid { color: var(--text-mid); }
 .text-dim { color: var(--text-dim); }
@@ -794,6 +894,39 @@ function AndroidDevice({
       </div>
       {keyboard && <AndroidKeyboard />}
       <AndroidNavBar dark={dark} />
+    </div>
+  );
+}
+
+function DesktopLogoMark() {
+  return (
+    <div className="desktop-logo-mark" aria-hidden="true">
+      <svg viewBox="0 0 180 180" fill="none">
+        <defs>
+          <linearGradient id="logoGrad" x1="20" y1="20" x2="160" y2="160">
+            <stop offset="0%" stopColor="#22D3EE" />
+            <stop offset="55%" stopColor="#A78BFA" />
+            <stop offset="100%" stopColor="#F472B6" />
+          </linearGradient>
+        </defs>
+
+        <path
+          d="M112 42 L58 90 L112 138"
+          stroke="url(#logoGrad)"
+          strokeWidth="24"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+
+        <path
+          d="M144 58 L98 90 L144 122"
+          stroke="url(#logoGrad)"
+          strokeWidth="20"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          opacity="0.85"
+        />
+      </svg>
     </div>
   );
 }
@@ -2972,7 +3105,7 @@ function WhatsAppDemo() {
   const caseCreated = visible.some(m => m.creates);
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 28, width: '100%' }}>
+    <div className="wa-demo-wrapper" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 28, width: '100%' }}>
       {/* Mobile Aura · Soporte — caja con tamaño real escalado para evitar separación visual excesiva */}
       <div className="demo-shadow" style={{ width: 245, height: 504, marginBottom: -68, flex: '0 0 auto' }}>
         <div style={{ transform: 'scale(0.72)', transformOrigin: 'top left' }}>
@@ -3607,15 +3740,140 @@ function smoothScrollTo(id) {
   window.scrollTo({ top, behavior: 'smooth' });
 }
 
+// ─── Language system ─────────────────────────────────────────
+const TRANSLATIONS = {
+  es: {
+    nav: { home: 'Inicio', work: 'Trabajos', stack: 'Stack', experience: 'Trayectoria', contact: 'Contacto' },
+    hero: {
+      desc: <>CTO &amp; full-stack engineer. Diseño y construyo plataformas de <span style={{ color: 'var(--text)' }}>geolocalización en tiempo real</span>, integraciones <span style={{ color: 'var(--text)' }}>Salesforce</span>, automatizaciones de <span style={{ color: 'var(--text)' }}>WhatsApp</span> y herramientas internas que mueven operaciones de campo cada día.</>,
+      available: 'Disponible para proyectos',
+      location: 'Barcelona',
+      ctaPrimary: 'Ver trabajos',
+      ctaSecondary: 'Contactar',
+      stats: [['+5', 'años construyendo software'], ['4', 'productos en producción'], ['∞', 'desarrollo multiplataforma'], ['+10', 'técnologias desarrolladas']],
+    },
+    projects: {
+      eyebrow: '01 · Trabajos seleccionados',
+      title: <>Productos que mueven<br/>operaciones reales.</>,
+      subtitle: <>Cada uno corre hoy en producción. Los demos de abajo son <span style={{ color: 'var(--cyan)' }}>interactivos</span> — cliquéalos.</>,
+      geotrack: { subtitle: 'App móvil · iOS + Android', desc: 'Geolocalización en tiempo real para personal de calle. Inicio de jornada con un tap, tracking continuo en segundo plano, registro de visitas, partes de trabajo y sincronización offline. Diseñado para operar en flotas con cientos de dispositivos sin saturar batería ni red.', m: [['<2%', 'consumo batería/hora'], ['500+', 'dispositivos activos'], ['99.4%', 'precisión GPS']] },
+      geomonitor: { subtitle: 'Plataforma web · Field Service & rutas', desc: 'Dashboard en tiempo real con mapa Leaflet. Visualiza la posición de cada técnico al momento, asigna órdenes de trabajo, planifica rutas y consulta el historial de incidencias. Procesado de eventos con WebSockets y cola de mensajes para garantizar entrega.', m: [['<150ms', 'latencia en vivo'], ['8h', 'datos retenidos'], ['100%', 'cobertura móvil']] },
+      whatsapp: { subtitle: 'Integración · WhatsApp + Salesforce', desc: 'Bot conversacional que atiende peticiones de clientes 24/7 vía WhatsApp y las sincroniza con Salesforce Service Cloud. Crea casos automáticamente, asigna prioridad, actualiza el CRM y notifica al técnico con toda la información del cliente en < 2 segundos.', m: [['<2s', 'tiempo de respuesta'], ['24/7', 'disponibilidad'], ['100%', 'sync Salesforce']] },
+      salesforce: { subtitle: 'Salesforce · Configuración & automatización', desc: 'Implementación completa de Salesforce Field Service: modelo de datos, flows, Apex triggers, permission sets, integraciones REST y reporting. Automatiza la asignación de técnicos, SLAs y escalaciones manteniendo la lógica de negocio dentro del CRM.', m: [['0', 'código externo'], ['3h', 'reducción ciclo'], ['∞', 'escalabilidad']] },
+    },
+    stack: {
+      eyebrow: '02 · Stack técnico',
+      title: <>El stack con el que construyo<br/>cosas que aguantan.</>,
+    },
+    timeline: {
+      eyebrow: '03 · Trayectoria',
+      title: <>De formación técnica<br/> a liderar producto.</>,
+      items: [
+        { when: '2024 — Hoy', role: 'CTO & Lead Engineer', where: 'Field Service · Plataforma propia', desc: 'Dirección técnica del producto y de la plataforma propia: arquitectura cloud, ciberseguridad, budgets de producto e infraestructura, roadmap, coordinación del equipo de ingeniería y lanzamiento de GeoTrack y GeoMonitor con cientos de dispositivos en producción.', active: true },
+        { when: '2023 — 2024', role: 'Helpdesk Field Service', where: 'Soporte técnico · Operaciones de campo', desc: 'Inicio profesional en soporte y Field Service: resolución de incidencias, atención a usuarios, configuración de equipos, coordinación con técnicos y mejora de procesos operativos.' },
+        { when: '2022 — 2024', role: 'Grado Superior DAM', where: 'Desarrollo de Aplicaciones Multiplataforma', desc: 'Formación especializada en programación, bases de datos, interfaces, desarrollo móvil y aplicaciones multiplataforma, consolidando la base técnica para crear soluciones propias.' },
+      ],
+    },
+    contact: {
+      eyebrow: '04 · Contacto',
+      title: <>¿Tienes un proyecto?<br/><span className="gradient-text">Hablemos.</span></>,
+      cta: 'Escríbeme un correo',
+    },
+    footer: {
+      copy: '© 2026 Jordi Aguilera · Diseñado y desarrollado a mano',
+      quote: 'Cuando soñéis con llegar a la luna, yo estaré tocando Marte.',
+    },
+  },
+  en: {
+    nav: { home: 'Home', work: 'Work', stack: 'Stack', experience: 'Experience', contact: 'Contact' },
+    hero: {
+      desc: <>CTO &amp; full-stack engineer. I design and build <span style={{ color: 'var(--text)' }}>real-time geolocation</span> platforms, <span style={{ color: 'var(--text)' }}>Salesforce</span> integrations, <span style={{ color: 'var(--text)' }}>WhatsApp</span> automations, and internal tools that run field operations every day.</>,
+      available: 'Available for projects',
+      location: 'Barcelona',
+      ctaPrimary: 'View work',
+      ctaSecondary: 'Contact',
+      stats: [['+5', 'years building software'], ['4', 'products in production'], ['∞', 'cross-platform dev'], ['+10', 'technologies mastered']],
+    },
+    projects: {
+      eyebrow: '01 · Selected work',
+      title: <>Products that power<br/>real operations.</>,
+      subtitle: <>Each one runs in production today. The demos below are <span style={{ color: 'var(--cyan)' }}>interactive</span> — click them.</>,
+      geotrack: { subtitle: 'Mobile app · iOS + Android', desc: 'Real-time geolocation for field workers. Start a shift with a tap, continuous background tracking, visit logging, work orders, and offline sync. Designed for fleets of hundreds of devices without draining battery or bandwidth.', m: [['<2%', 'battery/hour usage'], ['500+', 'active devices'], ['99.4%', 'GPS precision']] },
+      geomonitor: { subtitle: 'Web platform · Field Service & routes', desc: 'Real-time dashboard with a Leaflet map. See every technician\'s position live, assign work orders, plan routes, and review incident history. Event processing via WebSockets and a message queue for guaranteed delivery.', m: [['<150ms', 'live latency'], ['8h', 'data retained'], ['100%', 'mobile coverage']] },
+      whatsapp: { subtitle: 'Integration · WhatsApp + Salesforce', desc: 'Conversational bot handling customer requests 24/7 via WhatsApp, synced with Salesforce Service Cloud. Auto-creates cases, sets priority, updates the CRM, and notifies the technician with full client context in under 2 seconds.', m: [['<2s', 'response time'], ['24/7', 'availability'], ['100%', 'Salesforce sync']] },
+      salesforce: { subtitle: 'Salesforce · Config & automation', desc: 'Full Salesforce Field Service implementation: data model, flows, Apex triggers, permission sets, REST integrations, and reporting. Automates technician assignment, SLAs, and escalations while keeping business logic inside the CRM.', m: [['0', 'external code'], ['3h', 'cycle reduction'], ['∞', 'scalability']] },
+    },
+    stack: {
+      eyebrow: '02 · Tech stack',
+      title: <>The stack I build<br/>things that last with.</>,
+    },
+    timeline: {
+      eyebrow: '03 · Experience',
+      title: <>From technical training<br/>to leading product.</>,
+      items: [
+        { when: '2024 — Now', role: 'CTO & Lead Engineer', where: 'Field Service · Own platform', desc: 'Technical leadership of product and platform: cloud architecture, cybersecurity, product & infrastructure budgets, roadmap, engineering team coordination, and launch of GeoTrack and GeoMonitor with hundreds of devices in production.', active: true },
+        { when: '2023 — 2024', role: 'Helpdesk Field Service', where: 'Technical support · Field operations', desc: 'Professional start in support and Field Service: incident resolution, user support, equipment configuration, technician coordination, and operational process improvement.' },
+        { when: '2022 — 2024', role: 'DAM Higher Degree', where: 'Cross-platform Application Development', desc: 'Specialized training in programming, databases, interfaces, mobile development, and cross-platform applications — building the technical foundation to create my own solutions.' },
+      ],
+    },
+    contact: {
+      eyebrow: '04 · Contact',
+      title: <>Have a project in mind?<br/><span className="gradient-text">Let's talk.</span></>,
+      cta: 'Send me an email',
+    },
+    footer: {
+      copy: '© 2026 Jordi Aguilera · Designed and built by hand',
+      quote: 'While you dream of the moon, I\'ll already be touching Mars.',
+    },
+  },
+};
+
+const LangContext = React.createContext({ lang: 'es', t: (k) => k, toggleLang: () => {} });
+
+function useLang() { return React.useContext(LangContext); }
+
+function LangProvider({ children }) {
+  const [lang, setLang] = React.useState(() => {
+    try {
+      const stored = localStorage.getItem('portfolio-lang');
+      if (stored === 'es' || stored === 'en') return stored;
+    } catch (e) {}
+    return navigator.language && navigator.language.startsWith('es') ? 'es' : 'en';
+  });
+
+  const toggleLang = React.useCallback(() => {
+    setLang(l => {
+      const next = l === 'es' ? 'en' : 'es';
+      try { localStorage.setItem('portfolio-lang', next); } catch (e) {}
+      return next;
+    });
+  }, []);
+
+  // Helper: access nested key like 'hero.ctaPrimary'
+  const t = React.useCallback((path) => {
+    const keys = path.split('.');
+    let val = TRANSLATIONS[lang];
+    for (const k of keys) { if (val == null) return path; val = val[k]; }
+    return val ?? path;
+  }, [lang]);
+
+  return (
+    <LangContext.Provider value={{ lang, t, toggleLang }}>
+      {children}
+    </LangContext.Provider>
+  );
+}
+
 // ─── Nav ──────────────────────────────────────────────────────
 const NAV_ITEMS = [
-  { id: 'inicio',      label: 'Inicio' },
-  { id: 'trabajos',    label: 'Trabajos' },
-  { id: 'stack',       label: 'Stack', smOnly: false, hideSm: true },
-  { id: 'trayectoria', label: 'Trayectoria', hideSm: true },
+  { id: 'inicio',      labelKey: 'nav.home' },
+  { id: 'trabajos',    labelKey: 'nav.work' },
+  { id: 'stack',       labelKey: 'nav.stack', smOnly: false, hideSm: true },
+  { id: 'trayectoria', labelKey: 'nav.experience', hideSm: true },
 ];
 
 function Nav({ theme, onToggleTheme }) {
+  const { lang, t, toggleLang } = useLang();
   const [active, setActive] = useState('inicio');
   const innerRef = useRef(null);
   const indicatorRef = useRef(null);
@@ -3708,11 +3966,20 @@ function Nav({ theme, onToggleTheme }) {
             href={`#${it.id}`}
             onClick={(e) => onClickLink(e, it.id)}
           >
-            {it.label}
+            {t(it.labelKey)}
           </a>
         ))}
 
         <span className="nav-divider hide-sm" aria-hidden="true"></span>
+
+        <button
+          className="lang-toggle hide-sm"
+          onClick={toggleLang}
+          aria-label={lang === 'es' ? 'Switch to English' : 'Cambiar a español'}
+          title={lang === 'es' ? 'Español' : 'English'}
+        >
+          {lang === 'es' ? 'ES' : 'EN'}
+        </button>
 
         <button
           className="theme-toggle"
@@ -3740,16 +4007,264 @@ function Nav({ theme, onToggleTheme }) {
           href="#contacto"
           onClick={(e) => onClickLink(e, 'contacto')}
         >
-          Contacto
+          {t('nav.contact')}
         </a>
       </div>
     </nav>
   );
 }
 
+// ─── Hero Neon Visual ────────────────────────────────────────
+function HeroNeonVisual() {
+  return (
+    <svg viewBox="0 0 520 480" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <filter id="glow-cyan" x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur stdDeviation="4" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="glow-violet" x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur stdDeviation="5" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <filter id="glow-soft" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="10" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+        <linearGradient id="grad-main" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#22D3EE"/>
+          <stop offset="55%" stopColor="#A78BFA"/>
+          <stop offset="100%" stopColor="#F472B6"/>
+        </linearGradient>
+        <linearGradient id="grad-card-border" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#22D3EE" stopOpacity="0.6"/>
+          <stop offset="100%" stopColor="#A78BFA" stopOpacity="0.4"/>
+        </linearGradient>
+        <clipPath id="card-clip">
+          <rect x="40" y="40" width="440" height="400" rx="20"/>
+        </clipPath>
+      </defs>
+
+      {/* ── Background ambient glows ── */}
+      <ellipse cx="260" cy="200" rx="180" ry="140" fill="#A78BFA" fillOpacity="0.06" filter="url(#glow-soft)"/>
+      <ellipse cx="380" cy="320" rx="120" ry="90" fill="#22D3EE" fillOpacity="0.07" filter="url(#glow-soft)"/>
+
+      {/* ── Grid dots ── */}
+      <g fill="rgba(255,255,255,0.06)">
+        {Array.from({length:8}, (_,row) =>
+          Array.from({length:10}, (_,col) => (
+            <circle key={`${row}-${col}`} cx={40 + col*50} cy={30 + row*55} r="1.5"/>
+          ))
+        )}
+      </g>
+
+      {/* ── Main terminal card (floating) ── */}
+      <g className="hero-card-float">
+        {/* Card shadow/glow */}
+        <rect x="38" y="38" width="444" height="404" rx="22" fill="#22D3EE" fillOpacity="0.04" filter="url(#glow-soft)"/>
+
+        {/* Card body */}
+        <rect x="40" y="40" width="440" height="400" rx="20" fill="#0B0D14" fillOpacity="0.97"/>
+
+        {/* Card border gradient */}
+        <rect x="40" y="40" width="440" height="400" rx="20" fill="none" stroke="url(#grad-card-border)" strokeWidth="1.2"/>
+
+        {/* Top bar */}
+        <rect x="40" y="40" width="440" height="44" rx="20" fill="#0F1220"/>
+        <rect x="40" y="64" width="440" height="20" fill="#0F1220"/>
+
+        {/* Traffic lights */}
+        <circle cx="68" cy="62" r="6" fill="#FF5F57" filter="url(#glow-cyan)"/>
+        <circle cx="88" cy="62" r="6" fill="#FEBC2E"/>
+        <circle cx="108" cy="62" r="6" fill="#28C840"/>
+
+        {/* Title bar text */}
+        <text
+          x="260"
+          y="67"
+          textAnchor="middle"
+          fill="rgba(255,255,255,0.35)"
+          fontSize="11"
+          fontFamily="JetBrains Mono, monospace"
+          letterSpacing="0.08em"
+        >
+          live-ops.route.js
+        </text>
+        {/* Scan line effect */}
+        <rect x="40" y="84" width="440" height="1.5" fill="rgba(34,211,238,0.12)"/>
+
+        {/* ── Code lines ── */}
+{/* Line numbers */}
+<g fill="rgba(255,255,255,0.2)" fontSize="12" fontFamily="JetBrains Mono, monospace">
+  {[1,2,3,4,5,6,7,8,9,10,11,12].map((n,i) => (
+    <text key={n} x="64" y={112 + i*26}>{n}</text>
+  ))}
+</g>
+
+{/* Code content */}
+<g fontSize="11.5" fontFamily="JetBrains Mono, monospace">
+  {/* line 1 */}
+  <text x="94" y="112">
+    <tspan fill="#A78BFA">const</tspan>
+    <tspan fill="#22D3EE"> express</tspan>
+    <tspan fill="rgba(255,255,255,0.75)"> = </tspan>
+    <tspan fill="#34D399">require</tspan>
+    <tspan fill="rgba(255,255,255,0.75)">(</tspan>
+    <tspan fill="#F472B6">'express'</tspan>
+    <tspan fill="rgba(255,255,255,0.75)">)</tspan>
+  </text>
+
+  {/* line 2 */}
+  <text x="94" y="138">
+    <tspan fill="#A78BFA">const</tspan>
+    <tspan fill="#22D3EE"> app</tspan>
+    <tspan fill="rgba(255,255,255,0.75)"> = express()</tspan>
+  </text>
+
+  {/* line 3 */}
+  <text x="94" y="164">
+    <tspan fill="#22D3EE">app</tspan>
+    <tspan fill="rgba(255,255,255,0.75)">.</tspan>
+    <tspan fill="#34D399">use</tspan>
+    <tspan fill="rgba(255,255,255,0.75)">(express.</tspan>
+    <tspan fill="#34D399">json</tspan>
+    <tspan fill="rgba(255,255,255,0.75)">())</tspan>
+  </text>
+
+  {/* line 4 */}
+  <text x="94" y="190">
+    <tspan fill="#22D3EE">app</tspan>
+    <tspan fill="rgba(255,255,255,0.75)">.</tspan>
+    <tspan fill="#34D399">post</tspan>
+    <tspan fill="rgba(255,255,255,0.75)">(</tspan>
+    <tspan fill="#F472B6">'/ops/location'</tspan>
+    <tspan fill="rgba(255,255,255,0.75)">, async (req, res) =&gt; {'{'}</tspan>
+  </text>
+
+  {/* line 5 */}
+  <text x="94" y="216">
+    <tspan fill="#A78BFA">  const</tspan>
+    <tspan fill="rgba(255,255,255,0.75)"> {'{'} techId, lat, lng {'}'} = req.body</tspan>
+  </text>
+
+  {/* line 6 */}
+  <text x="94" y="242">
+    <tspan fill="#A78BFA">  const</tspan>
+    <tspan fill="#22D3EE"> update</tspan>
+    <tspan fill="rgba(255,255,255,0.75)"> = {'{'} techId, lat, lng {'}'}</tspan>
+  </text>
+
+  {/* line 7 */}
+  <text x="94" y="268">
+    <tspan fill="#22D3EE">  update</tspan>
+    <tspan fill="rgba(255,255,255,0.75)">.</tspan>
+    <tspan fill="#34D399">at</tspan>
+    <tspan fill="rgba(255,255,255,0.75)"> = Date.now()</tspan>
+  </text>
+
+  {/* line 8 */}
+  <text x="94" y="294">
+    <tspan fill="#A78BFA">  await</tspan>
+    <tspan fill="#22D3EE"> liveOps</tspan>
+    <tspan fill="rgba(255,255,255,0.75)">.</tspan>
+    <tspan fill="#34D399">publish</tspan>
+    <tspan fill="rgba(255,255,255,0.75)">(</tspan>
+    <tspan fill="#F472B6">'tech.location'</tspan>
+    <tspan fill="rgba(255,255,255,0.75)">, update)</tspan>
+  </text>
+
+  {/* line 9 */}
+  <text x="94" y="320">
+    <tspan fill="#22D3EE">  res</tspan>
+    <tspan fill="rgba(255,255,255,0.75)">.</tspan>
+    <tspan fill="#34D399">json</tspan>
+    <tspan fill="rgba(255,255,255,0.75)">({'{'}</tspan>
+    <tspan fill="rgba(255,255,255,0.55)"> ok: true, status: </tspan>
+    <tspan fill="#F472B6">'live'</tspan>
+    <tspan fill="rgba(255,255,255,0.55)"> {'}'})</tspan>
+  </text>
+
+  {/* line 10 */}
+  <text x="94" y="346" fill="rgba(255,255,255,0.75)">
+    {'}'})
+  </text>
+
+  {/* line 11 */}
+  <text x="94" y="372">
+    <tspan fill="rgba(255,255,255,0.35)">// safe internal operations API</tspan>
+  </text>
+
+  {/* line 12 */}
+  <text x="94" y="398">
+    <tspan fill="#A78BFA">module</tspan>
+    <tspan fill="rgba(255,255,255,0.75)">.</tspan>
+    <tspan fill="#22D3EE">exports</tspan>
+    <tspan fill="rgba(255,255,255,0.75)"> = app</tspan>
+  </text>
+</g>
+
+        {/* Active line highlight */}
+        <rect x="40" y="250" width="440" height="26" fill="rgba(34,211,238,0.04)" clipPath="url(#card-clip)"/>
+        <rect x="40" y="250" width="3" height="26" fill="#22D3EE" clipPath="url(#card-clip)"/>
+
+        {/* Cursor blink */}
+        <rect x="250" y="257" width="7" height="14" fill="#22D3EE" fillOpacity="0.9" rx="1">
+          <animate attributeName="opacity" values="1;0;1" dur="1.1s" repeatCount="indefinite"/>
+        </rect>
+      </g>
+
+      {/* ── Floating badge: JavaScript ── */}
+      <g className="hero-badge-float" style={{ animationDelay: '0s' }} filter="url(#glow-cyan)">
+        <rect x="320" y="8" width="112" height="32" rx="16" fill="#0B0D14" stroke="#22D3EE" strokeOpacity="0.5" strokeWidth="1"/>
+        <text x="374" y="29" textAnchor="middle" fill="#22D3EE" fontSize="11" fontFamily="JetBrains Mono, monospace" fontWeight="600">JavaScript</text>
+      </g>
+
+      {/* ── Floating badge: Node ── */}
+      <g className="hero-badge-float" style={{ animationDelay: '0.8s' }} filter="url(#glow-violet)">
+        <rect x="8" y="140" width="118" height="32" rx="16" fill="#0B0D14" stroke="#A78BFA" strokeOpacity="0.5" strokeWidth="1"/>
+        <text x="67" y="161" textAnchor="middle" fill="#A78BFA" fontSize="11" fontFamily="JetBrains Mono, monospace" fontWeight="600">Node.js</text>
+      </g>
+
+      {/* ── Floating badge: Salesforce ── */}
+      <g className="hero-badge-float" style={{ animationDelay: '1.4s' }}>
+        <rect x="8" y="350" width="100" height="32" rx="16" fill="#0B0D14" stroke="#F472B6" strokeOpacity="0.5" strokeWidth="1"/>
+        <text x="58" y="371" textAnchor="middle" fill="#F472B6" fontSize="11" fontFamily="JetBrains Mono, monospace" fontWeight="600">Salesforce</text>
+      </g>
+
+      {/* ── Floating badge: WebSocket ── */}
+      <g className="hero-badge-float" style={{ animationDelay: '0.4s' }}>
+        <rect x="360" y="448" width="110" height="32" rx="16" fill="#0B0D14" stroke="#34D399" strokeOpacity="0.5" strokeWidth="1"/>
+        <text x="415" y="469" textAnchor="middle" fill="#34D399" fontSize="11" fontFamily="JetBrains Mono, monospace" fontWeight="600">WebSockets</text>
+      </g>
+
+      {/* ── Decorative circuit lines ── */}
+      <g stroke="rgba(34,211,238,0.15)" strokeWidth="1" fill="none">
+        <path d="M 0 200 L 30 200 L 30 350 L 40 350"/>
+        <path d="M 480 120 L 520 120"/>
+        <path d="M 480 380 L 510 380 L 510 450 L 520 450"/>
+      </g>
+      <g fill="#22D3EE" fillOpacity="0.3">
+        <circle cx="30" cy="200" r="3"/>
+        <circle cx="30" cy="350" r="3"/>
+        <circle cx="480" cy="120" r="3"/>
+        <circle cx="510" cy="380" r="3"/>
+        <circle cx="510" cy="450" r="3"/>
+      </g>
+
+      {/* ── Neon accent corner ── */}
+      <path d="M 460 40 L 480 40 L 480 60" fill="none" stroke="#22D3EE" strokeOpacity="0.6" strokeWidth="2" strokeLinecap="round" filter="url(#glow-cyan)"/>
+      <path d="M 40 420 L 40 440 L 60 440" fill="none" stroke="#A78BFA" strokeOpacity="0.6" strokeWidth="2" strokeLinecap="round" filter="url(#glow-violet)"/>
+    </svg>
+  );
+}
+
 // ─── Hero ─────────────────────────────────────────────────────
 function Hero() {
+  const { t } = useLang();
   const [time, setTime] = useState('');
+
+  const currentYear = new Date().getFullYear();
+
   useEffect(() => {
     const update = () => {
       const d = new Date();
@@ -3761,47 +4276,57 @@ function Hero() {
     return () => clearInterval(id);
   }, []);
 
+  const stats = t('hero.stats');
+
   return (
     <section id="inicio" className="section" style={{ paddingTop: 180, paddingBottom: 40, position: 'relative' }}>
       <div className="container">
         <div className="reveal">
-          <span className="eyebrow">Portfolio · 2026</span>
+          <span className="eyebrow">Portfolio · {currentYear}</span>
         </div>
 
-        <h1 className="display hero-name reveal d1" style={{ marginTop: 36, maxWidth: '14ch' }}>
-          Jordi <br/>
-          <span className="gradient-text">Aguilera</span>
-        </h1>
+        {/* 2-col layout on desktop */}
+        <div className="hero-layout">
+          {/* Left: text content */}
+          <div>
+            <h1 className="display hero-name reveal d1" style={{ maxWidth: '14ch' }}>
+              Jordi <br/>
+              <span className="gradient-text">Aguilera</span>
+            </h1>
 
-        <div className="reveal d2" style={{ marginTop: 40, display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', justifyContent: 'space-between', gap: 32 }}>
-          <p style={{ fontSize: 20, lineHeight: 1.5, color: 'var(--text-mid)', maxWidth: 560, margin: 0 }}>
-            CTO &amp; full-stack engineer. Diseño y construyo plataformas de <span style={{ color: 'var(--text)' }}>geolocalización en tiempo real</span>, integraciones <span style={{ color: 'var(--text)' }}>Salesforce</span>, automatizaciones de <span style={{ color: 'var(--text)' }}>WhatsApp</span> y herramientas internas que mueven operaciones de campo cada día.
-          </p>
-          <div className="mono" style={{ fontSize: 12, color: 'var(--text-dim)', textAlign: 'right', whiteSpace: 'nowrap' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'flex-end' }}>
-              <span style={{ width: 6, height: 6, borderRadius: 999, background: 'var(--green)', boxShadow: '0 0 8px var(--green)' }}></span>
-              Disponible para proyectos
+            <div className="reveal d2" style={{ marginTop: 40, display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', justifyContent: 'space-between', gap: 32 }}>
+              <p style={{ fontSize: 20, lineHeight: 1.5, color: 'var(--text-mid)', maxWidth: 560, margin: 0 }}>
+                {t('hero.desc')}
+              </p>
+              <div className="mono" style={{ fontSize: 12, color: 'var(--text-dim)', textAlign: 'right', whiteSpace: 'nowrap' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'flex-end' }}>
+                  <span style={{ width: 6, height: 6, borderRadius: 999, background: 'var(--green)', boxShadow: '0 0 8px var(--green)' }}></span>
+                  {t('hero.available')}
+                </div>
+                <div style={{ marginTop: 6 }}>{time} · {t('hero.location')}</div>
+              </div>
             </div>
-            <div style={{ marginTop: 6 }}>{time} · Barcelona</div>
+
+            <div className="reveal d3" style={{ marginTop: 56, display: 'flex', gap: 14, flexWrap: 'wrap' }}>
+              <a className="btn btn-primary" href="#trabajos" onClick={(e) => { e.preventDefault(); smoothScrollTo('trabajos'); }}>
+                {t('hero.ctaPrimary')}
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </a>
+              <a className="btn btn-ghost" href="#contacto" onClick={(e) => { e.preventDefault(); smoothScrollTo('contacto'); }}>{t('hero.ctaSecondary')}</a>
+            </div>
+          </div>
+
+          {/* Right: neon visual (desktop only) */}
+          <div className="hero-visual reveal d2">
+            <HeroNeonVisual />
           </div>
         </div>
 
-        <div className="reveal d3" style={{ marginTop: 56, display: 'flex', gap: 14, flexWrap: 'wrap' }}>
-          <a className="btn btn-primary" href="#trabajos" onClick={(e) => { e.preventDefault(); smoothScrollTo('trabajos'); }}>
-            Ver trabajos
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-          </a>
-          <a className="btn btn-ghost" href="#contacto" onClick={(e) => { e.preventDefault(); smoothScrollTo('contacto'); }}>Contactar</a>
-        </div>
-
         {/* Live stats strip */}
-        <div className="reveal d4" style={{ marginTop: 96, display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 1, background: 'var(--border)', border: '1px solid var(--border)', borderRadius: 20, overflow: 'hidden' }}>
-          {[
-            ['+5', 'años construyendo software'],
-            ['4', 'productos en producción'],
-            ['∞', 'desarrollo multiplataforma'],
-            ['+10', 'técnologias desarrolladas'],
-          ].map(([n, l], i) => (
+        <div
+          className="reveal d4 hero-stats-grid"
+          style={{ marginTop: 96, display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 1, background: 'var(--border)', border: '1px solid var(--border)', borderRadius: 20, overflow: 'hidden' }}>
+          {stats.map(([n, l], i) => (
             <div key={i} style={{ padding: '28px 24px', background: 'var(--surface)' }}>
               <div className="display" style={{ fontSize: 44, lineHeight: 1 }}>{n}</div>
               <div className="mono" style={{ fontSize: 11, color: 'var(--text-dim)', marginTop: 8, letterSpacing: '0.08em', textTransform: 'uppercase' }}>{l}</div>
@@ -3827,18 +4352,20 @@ function Hero() {
 
 // ─── Projects Section ─────────────────────────────────────────
 function ProjectsSection() {
+  const { t } = useLang();
+  const pgt = (k) => t(`projects.${k}`);
   return (
     <section id="trabajos" className="section">
       <div className="container">
         <div className="reveal" style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 80, flexWrap: 'wrap', gap: 20 }}>
           <div>
-            <span className="eyebrow">01 · Trabajos seleccionados</span>
+            <span className="eyebrow">{pgt('eyebrow')}</span>
             <h2 className="display" style={{ fontSize: 'clamp(40px, 5vw, 72px)', marginTop: 16, maxWidth: '14ch' }}>
-              Productos que mueven<br/>operaciones reales.
+              {pgt('title')}
             </h2>
           </div>
           <div className="mono" style={{ fontSize: 13, color: 'var(--text-dim)', maxWidth: 320 }}>
-            Cada uno corre hoy en producción. Los demos de abajo son <span style={{ color: 'var(--cyan)' }}>interactivos</span> — cliquéalos.
+            {pgt('subtitle')}
           </div>
         </div>
 
@@ -3847,14 +4374,10 @@ function ProjectsSection() {
           n="01"
           color="cyan"
           title="GeoTrack"
-          subtitle="App móvil · iOS + Android"
-          desc="Geolocalización en tiempo real para personal de calle. Inicio de jornada con un tap, tracking continuo en segundo plano, registro de visitas, partes de trabajo y sincronización offline. Diseñado para operar en flotas con cientos de dispositivos sin saturar batería ni red."
+          subtitle={pgt('geotrack.subtitle')}
+          desc={pgt('geotrack.desc')}
           tags={['React Native', 'TypeScript', 'Geofencing', 'BLE', 'Push Notifications', 'Offline-first']}
-          metrics={[
-            ['<2%', 'consumo batería/hora'],
-            ['500+', 'dispositivos activos'],
-            ['99.4%', 'precisión GPS'],
-          ]}
+          metrics={pgt('geotrack.m')}
           stage={<GeoTrackDemo />}
         />
 
@@ -3864,14 +4387,10 @@ function ProjectsSection() {
           color="violet"
           flip
           title="GeoMonitor"
-          subtitle="Plataforma web · Field Service & rutas"
-          desc="Cuadro de mando para visualizar activos de Field Service en tiempo real, datos enviados desde GeoTrack y un planificador de rutas para visitas comerciales o incidencias. Mapas interactivos, asignación de tareas, optimización de rutas multi-stop y reporting al minuto."
+          subtitle={pgt('geomonitor.subtitle')}
+          desc={pgt('geomonitor.desc')}
           tags={['React', 'Next.js', 'Node.js', 'Leaflet', 'WebSockets', 'PostgreSQL']}
-          metrics={[
-            ['~12s', 'desde alta hasta ruta'],
-            ['18%', 'ahorro km/día'],
-            ['Realtime', 'sync sub-segundo'],
-          ]}
+          metrics={pgt('geomonitor.m')}
           stage={<GeoMonitorDemo />}
         />
 
@@ -3880,14 +4399,10 @@ function ProjectsSection() {
           n="03"
           color="cyan"
           title="WhatsApp ↔ Salesforce"
-          subtitle="Bot conversacional + LWC propio"
-          desc="Bot de WhatsApp y Webhook realizado en Node.js y con flujos conversacionales personalizados, integrado nativamente en Salesforce mediante Lightning Web Component propio. Los mensajes crean y enriquecen casos automáticamente, con timeline conversacional dentro del CRM y respuestas asistidas para los agentes."
+          subtitle={pgt('whatsapp.subtitle')}
+          desc={pgt('whatsapp.desc')}
           tags={['Salesforce', 'Apex', 'LWC', 'WhatsApp Business API', 'Node.js', 'Webhooks']}
-          metrics={[
-            ['-67%', 'tiempo primer contacto'],
-            ['100%', 'mensajes en CRM'],
-            ['1 click', 'casos creados'],
-          ]}
+          metrics={pgt('whatsapp.m')}
           stage={<WhatsAppDemo />}
         />
 
@@ -3897,14 +4412,10 @@ function ProjectsSection() {
           color="violet"
           flip
           title="MiStock"
-          subtitle="Power Apps · Inventario interno"
-          desc="App de Power Apps para gestionar inventarios de almacén con escaneo de códigos, movimientos de entrada/salida, mínimos y reposición automática. Integrada con Power Automate, Dataverse y SharePoint — desplegada sin código a medida en menos de 6 semanas."
+          subtitle={pgt('salesforce.subtitle')}
+          desc={pgt('salesforce.desc')}
           tags={['Power Apps', 'Power Automate', 'Dataverse', 'SharePoint', 'Power BI']}
-          metrics={[
-            ['6 sem.', 'de cero a producción'],
-            ['~0€', 'infra adicional'],
-            ['3', 'almacenes activos'],
-          ]}
+          metrics={pgt('salesforce.m')}
           stage={<MiStockDemo />}
           last
         />
@@ -3941,6 +4452,7 @@ function ProjectRow({ n, color, flip, title, subtitle, desc, tags, metrics, stag
 
 // ─── Stack ────────────────────────────────────────────────────
 function StackSection() {
+  const { t } = useLang();
   const items = [
     { name: 'JavaScript', kind: 'lang', logo: simpleIcon('javascript', 'F7DF1E') },
     { name: 'Node.js', kind: 'backend', logo: simpleIcon('nodedotjs', '5FA04E') },
@@ -3990,13 +4502,10 @@ function StackSection() {
     <section id="stack" className="section">
       <div className="container">
         <div className="reveal" style={{ marginBottom: 56 }}>
-          <span className="eyebrow">02 · Stack tecnológico</span>
+          <span className="eyebrow">{t('stack.eyebrow')}</span>
           <h2 className="display" style={{ fontSize: 'clamp(40px, 5vw, 72px)', marginTop: 16, maxWidth: '16ch' }}>
-            Las herramientas con las<br/> que <span className="gradient-text">trabajo a diario.</span>
+            {t('stack.title')}
           </h2>
-          <p className="text-mid" style={{ maxWidth: 580, marginTop: 18, fontSize: 17 }}>
-            Trabajo con plataformas cloud, bases de datos, automatización, desarrollo móvil nativo e IA aplicada para crear productos internos robustos, seguros y escalables.
-          </p>
         </div>
         <div className="stack-grid reveal d1">
           {items.map((it, i) => (
@@ -4070,18 +4579,15 @@ function TechIcon({ src, label, mono = false, fallback }) {
 
 // ─── Timeline ─────────────────────────────────────────────────
 function TimelineSection() {
-  const items = [
-    { when: '2024 — Hoy', role: 'CTO & Lead Engineer', where: 'Field Service · Plataforma propia', desc: 'Dirección técnica del producto y de la plataforma propia: arquitectura cloud, ciberseguridad, budgets de producto e infraestructura, roadmap, coordinación del equipo de ingeniería y lanzamiento de GeoTrack y GeoMonitor con cientos de dispositivos en producción.', active: true },
-    { when: '2023 — 2024', role: 'Helpdesk Field Service', where: 'Soporte técnico · Operaciones de campo', desc: 'Inicio profesional en soporte y Field Service: resolución de incidencias, atención a usuarios, configuración de equipos, coordinación con técnicos y mejora de procesos operativos.' },
-    { when: '2022 — 2024', role: 'Grado Superior DAM', where: 'Desarrollo de Aplicaciones Multiplataforma', desc: 'Formación especializada en programación, bases de datos, interfaces, desarrollo móvil y aplicaciones multiplataforma, consolidando la base técnica para crear soluciones propias.' },
-  ];
+  const { t } = useLang();
+  const items = t('timeline.items');
   return (
     <section id="trayectoria" className="section">
       <div className="container">
         <div className="reveal" style={{ marginBottom: 64 }}>
-          <span className="eyebrow">03 · Trayectoria</span>
+          <span className="eyebrow">{t('timeline.eyebrow')}</span>
           <h2 className="display" style={{ fontSize: 'clamp(40px, 5vw, 72px)', marginTop: 16, maxWidth: '14ch' }}>
-            De formación técnica<br/> a liderar producto.
+            {t('timeline.title')}
           </h2>
         </div>
         <div className="timeline">
@@ -4102,15 +4608,15 @@ function TimelineSection() {
 
 // ─── Contact ──────────────────────────────────────────────────
 function ContactSection() {
+  const { t } = useLang();
   return (
     <section id="contacto" className="section" style={{ paddingBottom: 40 }}>
       <div className="container">
         <div className="reveal">
-          <span className="eyebrow">04 · Contacto</span>
+          <span className="eyebrow">{t('contact.eyebrow')}</span>
         </div>
         <h2 className="display reveal d1" style={{ fontSize: 'clamp(56px, 9vw, 140px)', marginTop: 24, letterSpacing: '-0.04em' }}>
-          ¿Tienes un proyecto?<br/>
-          <span className="gradient-text">Hablemos.</span>
+          {t('contact.title')}
         </h2>
 
         <div className="reveal d3" style={{ marginTop: 56, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 14 }}>
@@ -4127,7 +4633,7 @@ function ContactSection() {
 
         <div className="reveal d4" style={{ marginTop: 80, display: 'flex', alignItems: 'center', gap: 18 }}>
           <a className="btn btn-primary" href="mailto:jordi-az@outlook.com" style={{ padding: '18px 28px', fontSize: 16 }}>
-            Escríbeme un correo
+            {t('contact.cta')}
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </a>
         </div>
@@ -4154,14 +4660,15 @@ function ContactCard({ label, value, href, icon }) {
 
 // ─── Footer ───────────────────────────────────────────────────
 function Footer() {
+  const { t } = useLang();
   return (
     <footer className="footer">
       <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
         <div className="mono" style={{ fontSize: 12, color: 'var(--text-dim)' }}>
-          © 2026 Jordi Aguilera · Diseñado y desarrollado a mano
+          {t('footer.copy')}
         </div>
         <div className="mono" style={{ fontSize: 12, color: 'var(--text-dim)', display: 'flex', alignItems: 'center', gap: 8 }}>
-          Cuando soñéis con llegar a la luna, yo estaré tocando Marte.
+          {t('footer.quote')}
         </div>
       </div>
     </footer>
@@ -4174,9 +4681,26 @@ function App() {
   const { theme, toggleTheme } = useTheme();
 
   return (
+    <LangProvider>
+      <AppInner theme={theme} onToggleTheme={toggleTheme} />
+    </LangProvider>
+  );
+}
+
+function AppInner({ theme, onToggleTheme }) {
+  const { lang } = useLang();
+
+  useEffect(() => {
+    document.documentElement.lang = lang;
+    document.title = lang === 'en'
+      ? 'Jordi Aguilera · CTO & Full-stack'
+      : 'Jordi Aguilera · CTO & Full-stack';
+  }, [lang]);
+
+  return (
     <>
       <div className="bg-fx"></div>
-      <Nav theme={theme} onToggleTheme={toggleTheme} />
+      <Nav theme={theme} onToggleTheme={onToggleTheme} />
       <main>
         <Hero />
         <ProjectsSection />
